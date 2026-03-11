@@ -1,3 +1,10 @@
 .DS_Store
-a.out
+
+/**/*.out
+/**/*.o
+
+# Todo cli remove temp files
+/todo-cli/todo-cli
+/todo-cli/tasks.dat
+
 report.txt
