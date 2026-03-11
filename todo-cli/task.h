@@ -5,7 +5,7 @@
 typedef enum {
   TODO,
   DOING,
-  DOME
+  DONE
 } Status;
 
 typedef struct {

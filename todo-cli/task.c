@@ -8,7 +8,7 @@ const char* return_status(Status status) {
       return "🔄";
     case DOING:
       return "💦";
-    case DOME:
+    case DONE:
       return "✅";
     default:
       return "💀";

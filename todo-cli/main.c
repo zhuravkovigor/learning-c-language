@@ -58,12 +58,12 @@ int main(int argc, char *argv[]) {
     const int target_id = atoi(argv[2]);
     FILE *f = fopen("tasks.dat", "rb+");
 
-    Task task;
     int found = 0;
 
+    Task task;
     while(fread(&task, sizeof(Task), 1, f)) {
       if (task.id == target_id) {
-        task.status = DOME;
+        task.status = DONE;
         fseek(f, -sizeof(Task), SEEK_CUR);
         fwrite(&task, sizeof(Task), 1, f);
         printf("Task %s is DONE!\n", task.title);
@@ -77,6 +77,27 @@ int main(int argc, char *argv[]) {
     }
 
     fclose(f);
+  } else if (strcmp(argv[1], "stats") == 0) {
+    FILE *f = fopen("tasks.dat", "rb");
+
+    fseek(f, 0, SEEK_END);
+    const int count = ftell(f) / sizeof(Task);
+    Task *all_tasks = malloc(count * sizeof(Task));
+
+    fseek(f, 0, SEEK_SET);
+    fread(all_tasks, sizeof(Task), count, f);
+    
+    int done_tasks = 0;
+    for (int i = 0; i < count; i++) {
+      if (all_tasks[i].status == DONE) {
+        done_tasks += 1;
+      }
+    }
+
+    printf("Total tasks %d, and done %d\n", count, done_tasks);
+
+    fclose(f);
+    free(all_tasks);
   } else {
     printf("Incorrect command, supported commands: add\n");
   }
