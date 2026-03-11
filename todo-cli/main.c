@@ -86,6 +86,7 @@ int main(int argc, char *argv[]) {
 
     fseek(f, 0, SEEK_SET);
     fread(all_tasks, sizeof(Task), count, f);
+    fclose(f);
     
     int done_tasks = 0;
     for (int i = 0; i < count; i++) {
@@ -96,8 +97,48 @@ int main(int argc, char *argv[]) {
 
     printf("Total tasks %d, and done %d\n", count, done_tasks);
 
-    fclose(f);
     free(all_tasks);
+  } else if (strcmp(argv[1], "delete") == 0) {
+    const int target_id = atoi(argv[2]);
+    FILE *f = fopen("tasks.dat", "rb");
+
+    fseek(f, 0, SEEK_END);
+    int count = ftell(f) / sizeof(Task);
+    fseek(f, 0, SEEK_SET);
+
+    Task *tasks = malloc(count * sizeof(Task));
+    fread(tasks, sizeof(Task), count, f);
+    fclose(f);
+
+    int found = 0;
+
+    for (int i = 0; i < count; i++) {
+      if (tasks[i].id == target_id) {
+        found = 1;
+
+        for (int j = i; j < count - 1; j++) {
+          tasks[j] = tasks[j + 1];
+        }
+
+        break;
+      }
+    }
+
+    if (found) {
+      count--;
+
+      if (count > 0) {
+        tasks = realloc(tasks, count * sizeof(Task));
+
+        FILE *f = fopen("tasks.dat", "wb");
+        fwrite(tasks, sizeof(Task), count, f);
+        fclose(f);
+        printf("Task with id: %d has been removed\n", target_id);
+      }
+    } 
+
+
+    free(tasks);
   } else {
     printf("Incorrect command, supported commands: add\n");
   }
