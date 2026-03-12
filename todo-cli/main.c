@@ -54,6 +54,7 @@ int main(int argc, char *argv[]) {
     while (fread(&task, sizeof(Task), 1, f) == 1) {
       print_task(&task);
     }
+    
   } else if (strcmp(argv[1], "done") == 0) {
     const int target_id = atoi(argv[2]);
     FILE *f = fopen("tasks.dat", "rb+");

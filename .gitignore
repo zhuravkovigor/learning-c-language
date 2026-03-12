@@ -7,4 +7,7 @@
 /todo-cli/todo-cli
 /todo-cli/tasks.dat
 
+# Raylib base window
+/raylib-base-window/raylib-base-window
+
 report.txt
