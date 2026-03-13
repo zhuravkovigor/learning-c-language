@@ -10,4 +10,7 @@
 # Raylib base window
 /raylib-base-window/raylib-base-window
 
+# Raylib moving
+/raylib-moving/game
+
 report.txt
