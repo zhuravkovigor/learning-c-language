@@ -14,7 +14,6 @@ int main() {
 
   Vector2 ball_pos = {.x = 90.0f, .y = 90.0f};
   Vector2 target_pos = {.x = 200.0f, .y = 200.0f};
-  SetRandomSeed(24);
 
   while (!WindowShouldClose()) {
     float dt = GetFrameTime() * 100;
