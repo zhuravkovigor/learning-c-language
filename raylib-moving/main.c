@@ -36,7 +36,7 @@ int main() {
     if (ball_pos.y > screen_height - circle_radius)
       ball_pos.y = screen_height - circle_radius;
 
-    if (CheckCollisionCircles(ball_pos, circle_radius, target_pos,
+    if (CheckCollisionCircles(ball_pos, (float)circle_radius / 3, target_pos,
                               circle_radius)) {
       score += 1;
       target_pos.x =
@@ -49,8 +49,8 @@ int main() {
 
     ClearBackground(DARKGRAY);
 
-    DrawCircleV(ball_pos, circle_radius, GOLD);
     DrawCircleV(target_pos, circle_radius, GREEN);
+    DrawCircleV(ball_pos, circle_radius, GOLD);
 
     DrawText(TextFormat("Score is: %d", score), 12, 12, 24, WHITE);
     EndDrawing();
