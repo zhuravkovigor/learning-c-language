@@ -113,7 +113,7 @@ int main() {
         score = 0;
         player_position.x = (float)window_width / 2 - circle_radius;
         player_position.y = (float)window_height / 2 - circle_radius;
-        timer = 3;
+        timer = 5.0f;
         enemy_speed_x = 2.0f;
         enemy_position.x = 0, enemy_position.y = (float)window_height / 2;
       }
