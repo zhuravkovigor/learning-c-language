@@ -1,8 +1,8 @@
 #include <raylib.h>
 #include <stdio.h>
 
-typedef enum GameStates { MENU, GAME, GAME_OVER } GameStates;
-typedef enum EnemySides {
+typedef enum { MENU, GAME, GAME_OVER } GameStates;
+typedef enum {
   LEFT,
   RIGHT,
 } EnemySides;
@@ -13,14 +13,17 @@ int main() {
   const int circle_radius = 50;
   const int coin_radius = 20;
   const float move_speed = 5.0f;
+  const int enemy_width = 100;
+  const int enemy_height = 20;
   float enemy_speed_x = 2.f;
   const int game_font_size = 24;
   const char text_for_menu[] = "To Start game enter Enter";
   const char text_for_gameover[] = "Game Over, press space to go menu";
+  float timer = 5.0f;
 
   Vector2 player_position = {.x = (float)window_width / 2 - circle_radius,
                              .y = (float)window_height / 2 - circle_radius};
-  Vector2 enemy_position = {.x = circle_radius, .y = 200.0f};
+  Vector2 enemy_position = {.x = 0, .y = (float)window_height / 2};
   Vector2 coin_position = {
       .x = GetRandomValue(coin_radius, window_width - coin_radius),
       .y = GetRandomValue(coin_radius, window_height - coin_radius)};
@@ -32,12 +35,17 @@ int main() {
   SetTargetFPS(144);
 
   while (!WindowShouldClose()) {
-    float dt = GetFrameTime() * 100;
+    float dt = (GetFrameTime() * 100);
 
     if (current_game_state == GAME) {
       // Check if game is over
-      if (CheckCollisionCircles(player_position, circle_radius, enemy_position,
-                                circle_radius)) {
+      Rectangle enemy_rectangle = {.x = enemy_position.x,
+                                   .y = enemy_position.y,
+                                   .width = enemy_width,
+                                   .height = enemy_height};
+
+      if (CheckCollisionCircleRec(player_position, circle_radius,
+                                  enemy_rectangle)) {
         current_game_state = GAME_OVER;
       }
 
@@ -45,6 +53,7 @@ int main() {
       if (CheckCollisionCircles(coin_position, coin_radius, player_position,
                                 circle_radius)) {
         score += 1;
+        timer += 1.0f;
         coin_position.x =
             GetRandomValue(coin_radius, window_width - coin_radius);
         coin_position.y =
@@ -54,9 +63,9 @@ int main() {
         enemy_speed_x *= 1.1;
       }
 
-      if (enemy_position.x < circle_radius) {
+      if (enemy_position.x < 0) {
         enemy_side_move = LEFT;
-      } else if (enemy_position.x > window_width - circle_radius) {
+      } else if (enemy_position.x > window_width - enemy_width) {
         enemy_side_move = RIGHT;
       }
 
@@ -83,6 +92,12 @@ int main() {
       if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
         player_position.y += move_speed * dt;
       }
+
+      if (timer > 0) {
+        timer -= GetFrameTime();
+      } else {
+        current_game_state = GAME_OVER;
+      }
     }
 
     // Working with a game state
@@ -98,6 +113,9 @@ int main() {
         score = 0;
         player_position.x = (float)window_width / 2 - circle_radius;
         player_position.y = (float)window_height / 2 - circle_radius;
+        timer = 3;
+        enemy_speed_x = 2.0f;
+        enemy_position.x = 0, enemy_position.y = (float)window_height / 2;
       }
     }
 
@@ -119,7 +137,14 @@ int main() {
       DrawCircleV(player_position, circle_radius, WHITE);
 
       // Drawing enemy
-      DrawCircleV(enemy_position, circle_radius, RED);
+      DrawRectangle(enemy_position.x, enemy_position.y, enemy_width,
+                    enemy_height, RED);
+
+      // Draw timer
+      DrawText(TextFormat("Timer: %.0f", timer),
+               window_width - 15 -
+                   MeasureText(TextFormat("Timer: %.0f", timer), 16),
+               12, 16, WHITE);
 
       // Draw score
       DrawText(TextFormat("Score %d", score), 12, 12, 16, WHITE);
